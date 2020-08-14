@@ -1,0 +1,3 @@
+include ':locationslib'
+include ':app'
+rootProject.name = "AndroidLocationLib"
