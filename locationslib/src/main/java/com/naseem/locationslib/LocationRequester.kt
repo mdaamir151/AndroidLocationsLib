@@ -20,8 +20,7 @@ class LocationRequester private constructor(
 ) : Observer {
     private var mListener: Listener? = null
     private var mPermissionListener: PermissionListener? = null
-    private var mState: State =
-        State.ONE_SHOT
+    private var mState: State = State.ONE_SHOT
     private val mLocationProvidersChangedListener = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (LocationManager.PROVIDERS_CHANGED_ACTION == intent?.action) {
@@ -32,9 +31,8 @@ class LocationRequester private constructor(
 
     private val mCallback = object : LocationCallback() {
         override fun onLocationResult(res: LocationResult?) {
-            if (res != null && res.lastLocation != null) {
-                mListener?.onLocationUpdate(res.lastLocation)
-            }
+            mListener?.onLocationUpdate(res?.lastLocation)
+            if (mState == State.ONE_SHOT) FusedLocationProviderClient(mContext).removeLocationUpdates(this)
         }
     }
 
@@ -56,8 +54,7 @@ class LocationRequester private constructor(
 
     @SuppressLint("MissingPermission")
     fun startLocationUpdates(oneShot: Boolean = false) {
-        mState = if (oneShot) State.ONE_SHOT
-        else State.UPDATING
+        mState = if (oneShot) State.ONE_SHOT else State.UPDATING
         FusedLocationProviderClient(mContext).requestLocationUpdates(
             mLocationRequest,
             mCallback,
@@ -108,7 +105,7 @@ class LocationRequester private constructor(
     }
 
     interface Listener {
-        fun onLocationUpdate(location: Location)
+        fun onLocationUpdate(location: Location?)
         fun onFailure(exception: Exception)
     }
 

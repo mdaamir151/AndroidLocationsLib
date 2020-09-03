@@ -15,8 +15,8 @@ class MainActivity : AppCompatActivity() {
         val btn = findViewById<Button>(R.id.btn)
         val textView = findViewById<TextView>(R.id.text_view)
         val listener = object : LocationRequester.Listener {
-            override fun onLocationUpdate(location: Location) {
-                textView.text = "(${location.latitude}, ${location.longitude})"
+            override fun onLocationUpdate(location: Location?) {
+                textView.text = "(${location?.latitude}, ${location?.longitude})"
             }
 
             override fun onFailure(exception: Exception) {
